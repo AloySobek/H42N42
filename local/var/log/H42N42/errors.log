@@ -1,0 +1,1 @@
+Mar 15 21:36:57: main: Fatal - Error in configuration file: Error while parsing configuration file: Eliom: while loading _build/default/lib/H42N42.cma: error loading shared library: Sys_error("/Users/aloysobek/Workspace/H42N42/_build/default/lib/H42N42.cma: No such file or directory")

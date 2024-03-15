@@ -1,0 +1,3 @@
+Mar 15 21:36:57: ocsigen:main: Command pipe created
+Mar 15 21:36:57: ocsigen:config: While parsing config file, tag <host>: No defaulthostname, assuming it is "galactica.local"
+Mar 15 21:37:39: ocsigen:config: While parsing config file, tag <host>: No defaulthostname, assuming it is "galactica.local"
