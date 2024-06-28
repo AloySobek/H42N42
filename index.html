@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game View</title>
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        text-align: center;
+    }
+
+    #game-view {
+        position: relative;
+        width: 80vw;
+        height: 60vh;
+        border: 2px solid black;
+        overflow: hidden;
+    }
+
+    .control-panel {
+        margin-top: 20px;
+    }
+
+    .top-bar, .bottom-bar {
+        position: absolute;
+        width: 100%;
+        height: 10%;
+        background-color: red;
+        z-index: 1;
+    }
+
+    .bottom-bar {
+        bottom: 0;
+        background-color: blue;
+    }
+
+    .circle {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: green;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2; /* Ensure the circle is on top */
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div id="game-view">
+        <div class="top-bar"></div>
+        <div class="bottom-bar"></div>
+        <div class="circle" id="circle"></div>
+    </div>
+    <div class="control-panel">
+        <!-- Add your sliders and number inputs here -->
+        <!-- For demonstration purposes, I'm adding a simple slider -->
+        <label for="game-speed">Game Speed:</label>
+        <input type="range" id="game-speed" name="game-speed" min="1" max="10" value="5">
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const gameView = document.getElementById('game-view');
+        const circle = document.getElementById('circle');
+        let isDragging = false;
+        let lastX, lastY;
+
+        // Mouse down event listener
+        gameView.addEventListener('mousedown', function(event) {
+            if (event.button === 0) { // Left mouse button
+                isDragging = true;
+                lastX = event.clientX;
+                lastY = event.clientY;
+            }
+        });
+
+        // Mouse move event listener
+        gameView.addEventListener('mousemove', function(event) {
+            if (isDragging) {
+                const newX = circle.offsetLeft + (event.clientX - lastX);
+                const newY = circle.offsetTop + (event.clientY - lastY);
+                lastX = event.clientX;
+                lastY = event.clientY;
+
+                // Ensure the circle stays within the game view
+                const maxX = gameView.clientWidth - circle.offsetWidth;
+                const maxY = gameView.clientHeight - circle.offsetHeight;
+                circle.style.left = Math.min(maxX, Math.max(0, newX)) + 'px';
+                circle.style.top = Math.min(maxY, Math.max(0, newY)) + 'px';
+            }
+        });
+
+        // Mouse up event listener
+        gameView.addEventListener('mouseup', function(event) {
+            if (event.button === 0) { // Left mouse button
+                isDragging = false;
+            }
+        });
+
+        // Game loop for moving the circle when not being dragged
+        function gameLoop() {
+            if (!isDragging) {
+                const speed = parseFloat(document.getElementById('game-speed').value);
+                const circleSpeed = speed * 0.1;
+                const circleRect = circle.getBoundingClientRect();
+                const gameRect = gameView.getBoundingClientRect();
+
+                let dx = circleSpeed;
+                let dy = circleSpeed;
+
+                if (circleRect.right + dx > gameRect.right || circleRect.left + dx < gameRect.left) {
+                    dx = -dx;
+                }
+                if (circleRect.bottom + dy > gameRect.bottom || circleRect.top + dy < gameRect.top) {
+                    dy = -dy;
+                }
+
+                circle.style.left = circleRect.left + dx + 'px';
+                circle.style.top = circleRect.top + dy + 'px';
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop(); // Start the game loop
+    });
+</script>
+</body>
+</html>
+
